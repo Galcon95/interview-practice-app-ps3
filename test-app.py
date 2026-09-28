@@ -8,4 +8,4 @@ st.title("Hello World!")
 st.markdown("This text is :red[Red], this is :blue[Blue], and this is :rainbow[Rainbow]!")
 
 
-# streamlit run basic-1.py
+# streamlit run test-app.py
