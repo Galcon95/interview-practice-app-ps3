@@ -11,17 +11,34 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from server.features import qa_generator, interviewer_questions  # noqa: E402 (import after the path fix)
+from server import llm  # noqa: E402 (import after the path fix)
+from server.features import qa_generator, interviewer_questions  # noqa: E402
+
+# settings (in all functions below): {"model", "temperature", "max_tokens"}
+# from the sidebar, or None for the server's defaults.
 
 
-def generate_questions(role, level):
+def get_models():
+    # Models for the settings panel: {model_id: {"label", "temperature"}}
+    return llm.MODELS
+
+
+def get_default_settings():
+    return {
+        "model": llm.DEFAULT_MODEL,
+        "temperature": llm.DEFAULT_TEMPERATURE,
+        "max_tokens": llm.DEFAULT_MAX_TOKENS,
+    }
+
+
+def generate_questions(role, level, settings=None):
     # Feature 1: returns a list of 5 questions for the role and level.
-    return qa_generator.generate_questions(role, level)
+    return qa_generator.generate_questions(role, level, settings)
 
 
-def generate_interviewer_questions(role, level):
+def generate_interviewer_questions(role, level, settings=None):
     # Feature 2: returns 5 dicts {"category", "question"} to ask the interviewer.
-    return interviewer_questions.generate_interviewer_questions(role, level)
+    return interviewer_questions.generate_interviewer_questions(role, level, settings)
 
 
 # TODO: analyze_job_description(text)                 -> feature 3

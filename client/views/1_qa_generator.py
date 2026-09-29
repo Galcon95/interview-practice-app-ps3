@@ -21,6 +21,8 @@ section_header(
 )
 
 role, level = role_picker()  # shared by both panels
+settings = st.session_state.get("llm_settings")  # from the sidebar (set in app.py)
+model = settings["model"] if settings else "default model"
 
 col_role, col_reverse = st.columns(2, gap="large")
 
@@ -29,9 +31,9 @@ with col_role:
         key="role_questions",
         title="Interview questions",
         button_label="Generate interview questions",
-        generate=lambda: api_client.generate_questions(role, level),
+        generate=lambda: api_client.generate_questions(role, level, settings),
         render_item=qa_card,  # qa_card(number, question)
-        label=f"{level} {role}",
+        label=f"{level} {role} · {model}",
     )
     st.markdown(
         '<div class="tip"><b>Interviewer tip:</b> Senior interviewers ask about '
@@ -44,7 +46,7 @@ with col_reverse:
         key="reverse_questions",
         title="Questions to ask the interviewer",
         button_label="Generate reverse questions",
-        generate=lambda: api_client.generate_interviewer_questions(role, level),
+        generate=lambda: api_client.generate_interviewer_questions(role, level, settings),
         render_item=lambda number, item: reverse_question_card(item["category"], item["question"]),
-        label=f"{level} {role}",
+        label=f"{level} {role} · {model}",
     )

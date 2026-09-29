@@ -6,7 +6,9 @@
 
 import streamlit as st
 
+import api_client
 from components.styles import apply_styles
+from components.settings_sidebar import settings_sidebar
 
 # All pages of the app, in menu order. Paths are relative to this file.
 pages = [
@@ -19,6 +21,11 @@ pages = [
 
 st.set_page_config(page_title="IntervAI", layout="wide")  # once, for all pages
 apply_styles()                                             # once, for all pages
+
+# LLM settings in the sidebar, for all pages. Pages read them from session_state.
+st.session_state["llm_settings"] = settings_sidebar(
+    api_client.get_models(), api_client.get_default_settings()
+)
 
 page = st.navigation(pages)  # draws the menu, returns the page that was clicked
 page.run()                   # runs that page's file

@@ -5,9 +5,10 @@ from server.llm import LLMClient
 from server.prompt_loader import load_prompt
 
 
-def generate_interviewer_questions(role, level):
+def generate_interviewer_questions(role, level, settings=None):
     # Returns a list of 5 dicts: {"category": "...", "question": "..."}
+    # settings: {"model", "temperature", "max_tokens"} from the sidebar, or None for defaults
     system_prompt = load_prompt("interviewer_questions")
     user_prompt = f"Role: {role}\nLevel: {level}"
-    reply = LLMClient().complete_json(system_prompt, user_prompt)
+    reply = LLMClient(**(settings or {})).complete_json(system_prompt, user_prompt)
     return reply["questions"]
