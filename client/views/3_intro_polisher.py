@@ -3,3 +3,7 @@
 # improved version back.
 
 # TODO: text area -> api_client.polish_introduction -> show before / after
+
+import streamlit as st
+
+st.write('This is the self-introduction polisher page.')

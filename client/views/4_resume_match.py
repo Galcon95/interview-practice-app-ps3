@@ -4,3 +4,7 @@
 
 # TODO: document_upload + job text -> api_client.match_resume
 #       -> match_score + skill_list (matched / missing)
+
+import streamlit as st
+
+st.write('This is the resume matching page.')

@@ -4,3 +4,6 @@
 
 # TODO: text area -> api_client.analyze_job_description
 #       -> skill_list + detected role -> qa_card list
+import streamlit as st
+
+st.write('This is the job description analyzer page.')

@@ -1,1 +1,3 @@
-# Back-end dependencies (to be filled in as we add them)
+# Back-end dependencies
+openai          # client for OpenRouter (OpenAI-compatible API)
+python-dotenv   # reads the API key from server/.env

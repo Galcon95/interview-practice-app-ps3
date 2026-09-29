@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs (may contain prompts and user input)
+server/logs/
+
+# Secrets
+.env
+.streamlit/secrets.toml

@@ -8,15 +8,20 @@ An interview-practice web app built with Streamlit (Python), for a Turing Colleg
 
 MVP features: (1) role-based Q&A generator, IT jobs only; (2) "questions to ask the interviewer", together with 1; (3) job description analyzer (role + skills, then 1 and 2); (4) self-introduction polisher; (5) resume upload and skill match against a job (coverage %); (6) security guards: input validation, prompt-injection filter, scope enforcement in the system prompt, optional rate limiting.
 
-- `client/`: front end (Streamlit). `app.py` is the home page, `api_client.py` has one call per feature, `pages/` holds one screen per feature (number prefix sets menu order), `components/` holds reusable widgets that pages combine.
+- `client/`: front end (Streamlit). `app.py` is the entry point: it sets page config and styles once, then lists every page with `st.navigation` (menu order and labels are set there). `views/` holds one page per feature (not named `pages/`, which would switch on Streamlit's automatic page discovery and clash with `st.navigation`), `api_client.py` has one call per feature, `components/` holds reusable widgets that pages combine.
 - `server/`: back end. `main.py` is the API (one endpoint per feature), `features/` has one module per feature, `guards/` has guards 1, 2 and 4, `prompts/` has one system prompt per feature plus `guardrail.md` (guard 3), `prompt_loader.py` reads them, `llm.py` calls the model, `document_reader.py` turns resumes into text. Secrets go in `server/.env` (see `.env.example`).
+- LLM: OpenRouter via the `openai` package (`server/llm.py`, class `LLMClient`, default model `openai/gpt-5-mini`, JSON replies). The key is `OPENROUTER_API_KEY`, from `server/.env` or a Windows environment variable (already set on this machine, so tests that click "Generate" make real, paid calls).
+- Debug log: `LLMClient` logs every request payload and raw reply through `LLMLogger` (`server/llm_logger.py`) to the terminal and `server/logs/llm.log` (git-ignored, rotates at 1 MB). `LLM_LOG_LEVEL` = DEBUG (default, full JSON), INFO (one line per call) or WARNING (errors only).
+- No FastAPI for now: `client/api_client.py` adds the project root to `sys.path` and imports `server/` directly. It's the only client file allowed to touch `server/`.
 
 ## Commands
 
 ```bash
-pip install streamlit          # use "streamlit[auth]" if using st.login (see docs/streamlit-auth.md)
-streamlit run test-app.py      # serves on http://localhost:8501
+pip install -r client/requirements.txt -r server/requirements.txt   # use "streamlit[auth]" if using st.login (see docs/streamlit-auth.md)
+streamlit run client/app.py              # run from the project root; serves on http://localhost:8501
 ```
+
+Always start from the project root: `.streamlit/config.toml` (the theme) is only read from the folder Streamlit is started in. Streamlit is installed in Python 3.13; the bare `python` in the shell points to an unrelated venv, so use `py -3.13` if needed.
 
 `client/requirements.txt` and `server/requirements.txt` list dependencies. Tests in `server/tests/` are empty placeholders, and there's no linter config yet.
 

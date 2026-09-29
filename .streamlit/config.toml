@@ -1,0 +1,9 @@
+# Streamlit theme, based on docs/stitch_interview_prep_web_app/DESIGN.md
+# Streamlit reads this file from the folder you start it in (the project root).
+[theme]
+base = "light"
+primaryColor = "#16a34a"              # emerald: buttons, active widgets
+backgroundColor = "#f8fafc"           # page canvas
+secondaryBackgroundColor = "#f0fdf4"  # inputs, sidebar
+textColor = "#0f172a"                 # slate text
+font = "sans serif"

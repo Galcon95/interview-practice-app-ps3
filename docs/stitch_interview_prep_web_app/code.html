@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_standard" name="shell-type"/>
+<title>IntervAI - AI-Powered IT Interview Preparation Workspace</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+    @layer base { 
+      html, body { margin: 0; padding: 0; } 
+      body { overscroll-behavior: none; } 
+      main > :first-child { margin-top: 0 !important; } 
+      main > :last-child { margin-bottom: 0 !important; } 
+    } 
+    ::-webkit-scrollbar { display: none; }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-card-subtle": "#f7f9f8",
+            "surface-container-lowest": "#ffffff",
+            "border-subtle-green": "#bbf7d0",
+            "on-tertiary-fixed-variant": "#005321",
+            "secondary-fixed": "#dae2fd",
+            "inverse-primary": "#62df7d",
+            "secondary-fixed-dim": "#bec6e0",
+            "background": "#f8f9ff",
+            "secondary": "#565e74",
+            "hud-border": "#1e3a29",
+            "on-error": "#ffffff",
+            "primary": "#006b2c",
+            "surface-dim": "#cbdbf5",
+            "tertiary-fixed": "#6bff8f",
+            "tertiary-fixed-dim": "#4ae176",
+            "on-primary-fixed-variant": "#005320",
+            "text-on-dark": "#f8fafc",
+            "accent-neon": "#4ade80",
+            "surface-container-high": "#dce9ff",
+            "on-secondary-fixed-variant": "#3f465c",
+            "error-container": "#ffdad6",
+            "hud-surface": "#0b1a11",
+            "on-surface-variant": "#3e4a3d",
+            "surface-tint": "#006e2d",
+            "surface-variant": "#d3e4fe",
+            "tertiary": "#006b2d",
+            "on-error-container": "#93000a",
+            "on-primary-fixed": "#002109",
+            "primary-fixed-dim": "#62df7d",
+            "surface": "#f8f9ff",
+            "on-tertiary-fixed": "#002109",
+            "primary-fixed": "#7ffc97",
+            "tertiary-container": "#00873b",
+            "surface-card": "#ffffff",
+            "border-subtle": "#e2e8f0",
+            "on-secondary": "#ffffff",
+            "primary-container": "#00873a",
+            "secondary-container": "#dae2fd",
+            "inverse-on-surface": "#eaf1ff",
+            "hud-surface-elevated": "#1e293b",
+            "outline": "#6e7b6c",
+            "error": "#ba1a1a",
+            "outline-variant": "#bdcaba",
+            "on-secondary-container": "#5c647a",
+            "text-muted": "#64748b",
+            "accent-emerald-dark": "#059669",
+            "surface-tint-green": "#f0fdf4",
+            "text-primary": "#0f172a",
+            "on-tertiary-container": "#f7fff3",
+            "inverse-surface": "#213145",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#0b1c30",
+            "on-primary-container": "#f7fff2",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "on-background": "#0b1c30",
+            "surface-canvas": "#f8fafc",
+            "surface-container-highest": "#d3e4fe",
+            "surface-bright": "#f8f9ff",
+            "surface-container": "#e5eeff",
+            "on-secondary-fixed": "#131b2e"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-xs": "0.5rem",
+            "space-sm": "0.75rem",
+            "gutter": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-3xl": "4.5rem",
+            "space-xl": "2rem",
+            "gutter-mobile": "1rem",
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "space-2xl": "3rem",
+            "space-md": "1rem",
+            "space-2xs": "0.25rem"
+          },
+          fontFamily: {
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-display": ["Plus Jakarta Sans"],
+            "body-sm": ["Inter"],
+            "label-badge": ["Plus Jakarta Sans"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "headline-display-mobile": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "label-mono": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "label-kbd": ["JetBrains Mono"]
+          },
+          fontSize: {
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-display": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-badge": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-display-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.025em", "fontWeight": "800" }],
+            "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+            "label-mono": ["13px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-kbd": ["11px", { "lineHeight": "14px", "fontWeight": "600" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<!-- 1. BRAND & HEADER -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface/85 backdrop-blur-xl border-b border-border-subtle shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+<div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3 shrink-0">
+<img alt="IntervAI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wy04P9yYiiinVeF39y7vhhMYR6BiY09WSUSAoeTpV2NYkMsIgjGOdjHOd282RzIsOH7RzORHt33rulOudACBVV65XGnCc8eiEZjvAeiLtdyFqpcmYdTLauHwDqI0UQOp1MNGvApNYcWxERbmmqNUOkia0vdkp3BDUYb-qMNO8mI6Jy8IHSOL9_14ZJYdw2BFLv613QAm9FArNx7O0HZ2JrCu-duWtXqAs7lzNgJTK-6QYM4Id5VUniIg"/>
+<a class="font-headline-sm text-headline-sm text-text-primary tracking-tight font-extrabold hidden sm:inline" data-path="home" href="#">Interv<span class="text-primary">AI</span> <span class="text-xs px-2 py-0.5 rounded-full bg-surface-tint-green text-primary font-semibold ml-1">MVP</span></a>
+</div>
+<nav class="hidden lg:flex items-center gap-1" data-active-classes="bg-surface-tint-green text-primary border border-border-subtle-green font-semibold">
+<a class="px-3 py-1.5 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="features" href="#features">Features</a>
+<a class="px-3 py-1.5 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="jd-analyzer" href="#jd-analyzer">JD Analyzer</a>
+<a class="px-3 py-1.5 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="resume-matcher" href="#resume-matcher">Resume Matcher</a>
+<a class="px-3 py-1.5 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="role-qa" href="#role-qa">Role Q&amp;A</a>
+<a class="px-3 py-1.5 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="security-guard" href="#security-guard">Security Guard</a>
+<a class="px-3 py-1.5 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="pricing" href="#pricing">Pricing</a>
+</nav>
+<div class="flex items-center gap-3 shrink-0">
+<a class="hidden sm:inline-flex font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface px-2.5 py-1.5 font-medium transition-colors" data-path="sign-in" href="#">Sign in</a>
+<a class="inline-flex items-center gap-1.5 bg-primary text-on-primary font-headline-sm text-body-sm font-semibold px-4 py-2 rounded-full shadow-[0_0_15px_-3px_rgba(0,107,44,0.35)] hover:bg-primary-container hover:shadow-[0_0_20px_-2px_rgba(0,135,58,0.5)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-150" data-path="launch-mvp" href="#workbench">
+<span>Launch MVP Studio</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</header>
+<main class="w-full pt-16 bg-surface">
+<div class="flex flex-col w-full">
+<!-- 2. HERO SECTION -->
+<section class="relative w-full pt-12 pb-20 overflow-hidden" id="hero">
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="max-w-6xl mx-auto px-6 flex flex-col items-center text-center relative z-10">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-tint-green text-primary border border-border-subtle-green shadow-sm mb-6">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-neon opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-label-badge text-label-badge uppercase tracking-wider">IT &amp; Tech Engineering MVP Edition</span>
+</div>
+<h1 class="font-headline-display text-headline-display text-text-primary tracking-tight max-w-4xl mb-6">
+            AI-Powered <span class="text-primary font-extrabold underline decoration-accent-neon/60 decoration-4 underline-offset-8">IT Interview</span> Preparation Workspace
+          </h1>
+<p class="font-body-lg text-body-lg text-text-muted max-w-3xl mb-8 leading-relaxed">
+            Analyze job descriptions, match your resume against role requirements, polish your elevator pitch, and generate hyper-targeted role-based Q&amp;A with enterprise-grade guardrails.
+          </p>
+<div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
+<a class="inline-flex items-center gap-2 bg-primary text-on-primary font-headline-sm text-body-lg font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-primary/25 hover:bg-primary-container hover:scale-[1.02] active:scale-[0.98] transition-all duration-200" data-path="workbench" href="#workbench">
+<span>Try MVP Studio Free</span>
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</a>
+<a class="inline-flex items-center gap-2 bg-surface-card border border-border-subtle text-text-primary font-headline-sm text-body-lg font-semibold px-6 py-3.5 rounded-full hover:bg-surface-tint-green hover:border-border-subtle-green transition-all" data-path="security" href="#security-guard">
+<span class="material-symbols-outlined text-primary text-[20px]">shield</span>
+<span>4-Tier Guardrails</span>
+</a>
+</div>
+<!-- Trust Pills -->
+<div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-text-primary font-body-sm text-body-sm mb-14">
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-card border border-border-subtle shadow-xs"><span class="text-primary font-bold">⚡</span> Instant JD Skill Extraction</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-card border border-border-subtle shadow-xs"><span class="text-primary font-bold">🎯</span> 82% Resume Match Coverage</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-card border border-border-subtle shadow-xs"><span class="text-primary font-bold">🛡️</span> 4-Tier Security Guardrails</span>
+</div>
+<!-- Interactive Hero MVP Workbench Preview -->
+<div class="w-full max-w-6xl rounded-2xl bg-hud-surface p-5 sm:p-6 shadow-2xl shadow-text-primary/15 text-left relative overflow-hidden border border-hud-border" id="workbench">
+<div class="absolute -right-24 -bottom-24 w-80 h-80 bg-accent-neon/10 rounded-full blur-[90px] pointer-events-none"></div>
+<!-- Workbench Window Bar -->
+<div class="flex items-center justify-between pb-4 border-b border-hud-border/70 mb-5">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-[#ff5f57] inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-[#febc2e] inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-[#28c840] inline-block"></span>
+<span class="ml-3 font-label-mono text-label-mono text-text-muted/80">intervai-mvp-studio // Session: senior-cloud-engineer-l6</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/30 text-accent-neon font-label-mono text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-neon animate-pulse"></span> Security Guards: ACTIVE
+                </span>
+</div>
+</div>
+<!-- 3-Column Integrated Workbench -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+<!-- Left: Input JD + Uploaded Resume -->
+<div class="lg:col-span-4 bg-hud-surface-elevated/60 rounded-xl p-4 border border-hud-border flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-badge text-label-badge text-text-muted uppercase tracking-wider">Target Job &amp; Profile</span>
+<span class="text-[11px] text-accent-neon font-label-mono bg-accent-neon/10 px-2 py-0.5 rounded">Parsed</span>
+</div>
+<div class="p-3 bg-black/40 rounded-lg border border-hud-border mb-3">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[18px]">description</span>
+<p class="font-headline-sm text-body-sm font-semibold text-text-on-dark truncate">Senior Cloud &amp; Distributed Sys Lead</p>
+</div>
+<p class="font-body-sm text-[12px] text-text-muted line-clamp-2">"Seeking 6+ yrs with Kubernetes, Go/Kafka streaming pipelines, high concurrency microservices, and multi-region AWS resilience."</p>
+</div>
+<div class="p-3 bg-black/40 rounded-lg border border-hud-border">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-neon text-[18px]">badge</span>
+<span class="font-headline-sm text-body-sm font-semibold text-text-on-dark">Alex_Kim_Resume.pdf</span>
+</div>
+<span class="text-[10px] font-label-mono text-emerald-400 bg-emerald-950/50 px-1.5 py-0.5 rounded">Verified</span>
+</div>
+<p class="font-body-sm text-[12px] text-text-muted">Tech Stack: Go, Kafka, Docker, Terraform, PostgreSQL, gRPC</p>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-hud-border/70 flex items-center justify-between text-xs text-text-muted font-label-mono">
+<span>Tokens used: 382 / 4,000</span>
+<span class="text-accent-neon">Pre-flight Guard ✓</span>
+</div>
+</div>
+<!-- Middle: JD & Skill Analyzer -->
+<div class="lg:col-span-4 bg-hud-surface-elevated/60 rounded-xl p-4 border border-hud-border flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-badge text-label-badge text-text-muted uppercase tracking-wider">JD Skill &amp; Match Engine</span>
+<span class="font-headline-sm text-body-sm font-bold text-accent-neon">82% Fit</span>
+</div>
+<!-- Match Progress Bar -->
+<div class="w-full bg-black/40 h-2.5 rounded-full overflow-hidden mb-3 border border-hud-border">
+<div class="bg-gradient-to-r from-primary to-accent-neon h-full rounded-full w-[82%]"></div>
+</div>
+<!-- Matched Skills -->
+<p class="font-label-mono text-[11px] text-text-muted uppercase tracking-wider mb-1.5">Matched Hard Skills (8/10)</p>
+<div class="flex flex-wrap gap-1.5 mb-4">
+<span class="px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-[11px] font-label-mono">Go / Golang</span>
+<span class="px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-[11px] font-label-mono">Apache Kafka</span>
+<span class="px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-[11px] font-label-mono">Kubernetes</span>
+<span class="px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-[11px] font-label-mono">Distributed Systems</span>
+</div>
+<!-- Missing Gaps -->
+<p class="font-label-mono text-[11px] text-rose-300 uppercase tracking-wider mb-1.5">Identified Gap to Address (2)</p>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-rose-950/70 border border-rose-500/30 text-rose-300 text-[11px] font-label-mono">Multi-region AWS Active-Active</span>
+<span class="px-2 py-0.5 rounded bg-rose-950/70 border border-rose-500/30 text-rose-300 text-[11px] font-label-mono">gRPC Load Balancing</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-hud-border/70 text-[12px] text-text-muted flex items-center justify-between">
+<span class="text-accent-neon font-medium">Bridge Strategy Generated</span>
+<span class="material-symbols-outlined text-accent-neon text-[16px]">check_circle</span>
+</div>
+</div>
+<!-- Right: Auto-generated Role Q&A + Questions to Ask -->
+<div class="lg:col-span-4 bg-hud-surface-elevated/60 rounded-xl p-4 border border-hud-border flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3 border-b border-hud-border pb-2">
+<span class="font-headline-sm text-[12px] font-bold text-accent-neon">Generated Role Q&amp;A</span>
+<span class="text-[11px] font-label-mono text-text-muted">Tab 1 of 2</span>
+</div>
+<div class="bg-black/40 rounded-lg p-3 border border-hud-border mb-3">
+<span class="text-[10px] font-label-mono text-accent-neon block mb-1">Architecture Q&amp;A (STAR Format)</span>
+<p class="font-body-sm text-[12px] text-text-on-dark font-medium mb-1">"How did you prevent consumer lag spikes on Kafka during traffic surges?"</p>
+<p class="font-body-sm text-[11px] text-text-muted leading-relaxed">
+                      → "Partition key rebalance + exponential backoff retry topic to preserve 99.99% throughput under 120k req/sec."
+                    </p>
+</div>
+<div class="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/20">
+<div class="flex items-center gap-1 text-[11px] text-accent-neon font-bold mb-1">
+<span class="material-symbols-outlined text-[14px]">psychology_alt</span> Reverse Question to Ask VP:
+                    </div>
+<p class="text-[11px] text-text-on-dark italic">"What is your target SLO for cross-region data failover as your cluster scales?"</p>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-hud-border/70 flex items-center justify-between text-xs">
+<span class="text-text-muted">Export options:</span>
+<div class="flex gap-2 font-label-mono text-[11px] text-accent-neon">
+<button class="hover:underline">Copy Markdown</button>
+<span>·</span>
+<button class="hover:underline">Print Cheat Sheet</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. QUICK 3-STEP ACTION BAR -->
+<section class="w-full py-8 bg-surface-canvas border-y border-border-subtle">
+<div class="max-w-6xl mx-auto px-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-card border border-border-subtle shadow-xs">
+<div class="w-10 h-10 rounded-full bg-surface-tint-green text-primary font-bold flex items-center justify-center font-headline-sm shrink-0">1</div>
+<div>
+<p class="font-headline-sm text-body-md font-bold text-text-primary">Paste Job Description</p>
+<p class="font-body-sm text-body-sm text-text-muted">Automated IT hard &amp; soft skill taxonomy extraction</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-card border border-border-subtle shadow-xs">
+<div class="w-10 h-10 rounded-full bg-surface-tint-green text-primary font-bold flex items-center justify-center font-headline-sm shrink-0">2</div>
+<div>
+<p class="font-headline-sm text-body-md font-bold text-text-primary">Match Resume &amp; Gaps</p>
+<p class="font-body-sm text-body-sm text-text-muted">Identify exact coverage percentage &amp; bridge scripts</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-card border border-border-subtle shadow-xs">
+<div class="w-10 h-10 rounded-full bg-surface-tint-green text-primary font-bold flex items-center justify-center font-headline-sm shrink-0">3</div>
+<div>
+<p class="font-headline-sm text-body-md font-bold text-text-primary">Practice Q&amp;A &amp; Reverse Qs</p>
+<p class="font-body-sm text-body-sm text-text-muted">Targeted STAR technical answers &amp; reverse questions</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. CORE MVP FEATURE SHOWCASE (6 MVP Items) -->
+<!-- FEATURES 1 & 2: Role-based Q&A & "Questions to Ask Interviewer" Generator -->
+<section class="w-full py-20 bg-surface" id="role-qa">
+<div class="max-w-6xl mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-14">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-tint-green text-primary font-label-badge text-label-badge uppercase tracking-wider mb-4">
+              MVP Features 1 &amp; 2
+            </span>
+<h2 class="font-headline-display text-headline-lg font-bold text-text-primary tracking-tight mb-4">
+              Role-Based Q&amp;A &amp; Reverse Questions Generator
+            </h2>
+<p class="font-body-lg text-body-lg text-text-muted">
+              Specialized for Frontend, Backend, DevOps/SRE, System Design, and Data/AI engineering candidates.
+            </p>
+</div>
+<!-- Interactive Tabbed Container -->
+<div class="rounded-2xl bg-surface-card border border-border-subtle shadow-sm overflow-hidden">
+<!-- Tabs Header -->
+<div class="flex border-b border-border-subtle bg-surface-canvas p-2 gap-2">
+<button class="px-5 py-2.5 rounded-xl font-headline-sm text-body-sm font-semibold bg-white text-primary shadow-xs border border-border-subtle flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">quiz</span>
+<span>Role-specific Technical &amp; Behavioral Q&amp;A</span>
+</button>
+<button class="px-5 py-2.5 rounded-xl font-headline-sm text-body-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/60 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">help_center</span>
+<span>Reverse Questions Generator ("Questions to Ask Interviewer")</span>
+</button>
+</div>
+<!-- Tab Content View -->
+<div class="p-6 sm:p-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left: Question List & Nuance -->
+<div class="lg:col-span-7 flex flex-col gap-4">
+<div class="flex items-center justify-between pb-2 border-b border-border-subtle">
+<span class="font-label-mono text-xs text-text-muted">Role Track: Backend &amp; Cloud Infrastructure</span>
+<span class="text-xs font-label-badge text-primary bg-surface-tint-green px-2 py-0.5 rounded font-bold">STAR Model</span>
+</div>
+<div class="p-5 rounded-xl bg-surface-canvas border border-border-subtle">
+<div class="flex items-start gap-3 mb-3">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-xs font-bold shrink-0">Q1</span>
+<p class="font-headline-sm text-body-md font-bold text-text-primary">
+                        "Walk me through how you designed a high-throughput event ingestion system with zero message loss."
+                      </p>
+</div>
+<div class="pl-9 space-y-2 text-text-muted text-body-sm">
+<p><strong class="text-text-primary">Situation &amp; Task:</strong> Ingestion gateway handled 45,000 events/sec with intermittent spike drops during flash sale campaigns.</p>
+<p><strong class="text-text-primary">Action:</strong> Implemented Go-based worker pools backed by Kafka partitioning with idempotent consumer writes in Redis and PostgreSQL.</p>
+<p><strong class="text-text-primary">Result &amp; Metric:</strong> Scaled to 110,000 events/sec with zero drops, reducing p99 latency from 1.8s down to 140ms.</p>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-tint-green/60 border border-border-subtle-green flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">tips_and_updates</span>
+<div>
+<p class="font-headline-sm text-body-sm font-bold text-primary">Interviewer Nuance Tip</p>
+<p class="text-body-sm text-on-surface-variant">
+                        Staff &amp; Principal interviewers will probe trade-offs. Explicitly mention why you picked Kafka over SQS/RabbitMQ (e.g. strict ordering, replayability).
+                      </p>
+</div>
+</div>
+</div>
+<!-- Right: Reverse Questions to Ask Interviewer -->
+<div class="lg:col-span-5 flex flex-col gap-4">
+<div class="flex items-center justify-between pb-2 border-b border-border-subtle">
+<span class="font-headline-sm text-body-sm font-bold text-text-primary">Impression-Making Reverse Questions</span>
+<span class="text-xs font-label-mono text-primary bg-primary/10 px-2 py-0.5 rounded font-medium">Categorized</span>
+</div>
+<div class="space-y-3">
+<div class="p-3.5 rounded-xl border border-border-subtle bg-white">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-label-badge uppercase font-bold text-primary">Engineering Culture</span>
+</div>
+<p class="text-body-sm text-text-primary font-medium">"How do your teams navigate the trade-off between architectural refactoring and shipping feature deadlines?"</p>
+</div>
+<div class="p-3.5 rounded-xl border border-border-subtle bg-white">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-label-badge uppercase font-bold text-primary">Tech Stack Roadmap</span>
+</div>
+<p class="text-body-sm text-text-primary font-medium">"What are the biggest technical debt bottlenecks currently capping your platform's scaling velocity over the next 12 months?"</p>
+</div>
+<div class="p-3.5 rounded-xl border border-border-subtle bg-white">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-label-badge uppercase font-bold text-primary">Team Dynamics &amp; Growth</span>
+</div>
+<p class="text-body-sm text-text-primary font-medium">"What does an exceptional engineer in this role achieve within their first 90 days that isn't listed in the job description?"</p>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-xl bg-surface-canvas border border-border-subtle text-primary font-headline-sm text-body-sm font-semibold hover:bg-surface-tint-green transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">autorenew</span>
+<span>Generate 5 More Targeted Questions</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FEATURES 3 & 5: Job Description Analyzer & Resume Match Score -->
+<section class="w-full py-20 bg-surface-canvas border-t border-border-subtle" id="jd-analyzer">
+<div class="max-w-6xl mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-14">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-tint-green text-primary font-label-badge text-label-badge uppercase tracking-wider mb-4">
+              MVP Features 3 &amp; 5
+            </span>
+<h2 class="font-headline-display text-headline-lg font-bold text-text-primary tracking-tight mb-4">
+              Job Description Analyzer &amp; Resume Match Score
+            </h2>
+<p class="font-body-lg text-body-lg text-text-muted">
+              Paste any IT job posting to extract requirements, parse your resume, and get an honest coverage score with tailored bridge strategies.
+            </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch" id="resume-matcher">
+<!-- Step 1: Paste JD Card -->
+<div class="lg:col-span-6 rounded-2xl bg-surface-card p-6 sm:p-8 border border-border-subtle shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="font-headline-sm text-body-lg font-bold text-text-primary flex items-center gap-2">
+<span class="w-7 h-7 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">1</span>
+                    Automated JD Skill Extraction
+                  </span>
+<span class="text-xs font-label-mono text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Parsed in 0.8s</span>
+</div>
+<div class="p-4 rounded-xl bg-surface-canvas border border-border-subtle mb-5">
+<p class="font-label-mono text-xs text-text-muted mb-2 uppercase tracking-wide">Extracted Hard Skills Taxonomy</p>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-primary font-label-mono text-xs font-medium">Apache Kafka (P0)</span>
+<span class="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-primary font-label-mono text-xs font-medium">Golang / Go (P0)</span>
+<span class="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-primary font-label-mono text-xs font-medium">Kubernetes (P0)</span>
+<span class="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-primary font-label-mono text-xs font-medium">TypeScript (P1)</span>
+<span class="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-primary font-label-mono text-xs font-medium">Distributed SQL / CockroachDB</span>
+</div>
+<p class="font-label-mono text-xs text-text-muted mb-2 uppercase tracking-wide">Seniority &amp; Responsibilities</p>
+<ul class="text-body-sm text-text-muted space-y-1.5 list-disc list-inside">
+<li>Senior / Staff IC level (5-8 years production experience)</li>
+<li>Design disaster-recovery architecture for multi-region scale</li>
+<li>Mentor junior backend engineers through code review and RFCs</li>
+</ul>
+</div>
+</div>
+<div class="flex items-center justify-between text-body-sm text-text-muted pt-3 border-t border-border-subtle">
+<span>Input: Paste text, LinkedIn URL, or upload PDF</span>
+<span class="text-primary font-semibold cursor-pointer hover:underline">Re-run Parse →</span>
+</div>
+</div>
+<!-- Step 2: Resume Match Score Card -->
+<div class="lg:col-span-6 rounded-2xl bg-surface-card p-6 sm:p-8 border border-border-subtle shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="font-headline-sm text-body-lg font-bold text-text-primary flex items-center gap-2">
+<span class="w-7 h-7 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">2</span>
+                    Resume Match &amp; Skill Gap Engine
+                  </span>
+<span class="text-xs font-label-badge text-primary bg-surface-tint-green px-2 py-0.5 rounded font-bold">Coverage Audit</span>
+</div>
+<!-- Circular / Score Indicator -->
+<div class="p-5 rounded-xl bg-surface-canvas border border-border-subtle mb-4 flex items-center gap-6">
+<div class="relative w-24 h-24 shrink-0 flex items-center justify-center rounded-full bg-white border-4 border-primary shadow-xs">
+<div class="text-center">
+<span class="font-headline-display text-headline-sm font-extrabold text-primary">68%</span>
+<span class="block text-[10px] font-label-mono text-text-muted uppercase">Match</span>
+</div>
+</div>
+<div>
+<p class="font-headline-sm text-body-md font-bold text-text-primary">Strong Core Alignment</p>
+<p class="text-body-sm text-text-muted mt-1">14 requirements matched, 3 skill gaps flagged to prepare talking points for during screening.</p>
+</div>
+</div>
+<!-- Skill Gaps to Bridge -->
+<div class="p-4 rounded-xl bg-rose-50/70 border border-rose-200">
+<div class="flex items-center gap-2 text-rose-800 font-headline-sm text-body-sm font-bold mb-2">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span>Skill Gaps to Address in Interview:</span>
+</div>
+<ul class="text-body-sm text-rose-900 space-y-1">
+<li>• <strong>CockroachDB:</strong> Bridge with your PostgreSQL replica experience.</li>
+<li>• <strong>Multi-region Active-Active:</strong> Frame via DNS route failovers.</li>
+</ul>
+</div>
+</div>
+<div class="pt-4 border-t border-border-subtle flex items-center justify-between">
+<span class="text-body-sm text-text-muted">Generated Bridge Talking Points Ready</span>
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary font-headline-sm text-body-sm font-semibold hover:bg-primary-container transition-colors">
+                  View Talking Points
+                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FEATURE 4: Self-Introduction ("Tell Me About Yourself") Polisher -->
+<section class="w-full py-20 bg-surface">
+<div class="max-w-6xl mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-14">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-tint-green text-primary font-label-badge text-label-badge uppercase tracking-wider mb-4">
+              MVP Feature 4
+            </span>
+<h2 class="font-headline-display text-headline-lg font-bold text-text-primary tracking-tight mb-4">
+              Self-Introduction ("Tell Me About Yourself") Polisher
+            </h2>
+<p class="font-body-lg text-body-lg text-text-muted">
+              Transform awkward rambling into a crisp 60-second elevator pitch structured with a memorable hook, quantified technical impact, and role alignment.
+            </p>
+</div>
+<div class="rounded-2xl bg-surface-card border border-border-subtle shadow-sm p-6 sm:p-8">
+<!-- Controls bar -->
+<div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-border-subtle mb-6">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-body-sm font-bold text-text-primary">Tone Profile:</span>
+<div class="inline-flex rounded-lg bg-surface-canvas p-1 border border-border-subtle text-xs font-medium">
+<button class="px-3 py-1 rounded-md bg-white text-primary shadow-xs font-semibold">Senior IC</button>
+<button class="px-3 py-1 rounded-md text-text-muted hover:text-text-primary">Tech Lead / Executive</button>
+<button class="px-3 py-1 rounded-md text-text-muted hover:text-text-primary">Startup Generalist</button>
+</div>
+</div>
+<div class="flex items-center gap-2 text-xs font-label-mono text-text-muted">
+<span>Target Length: <strong>60 Seconds (~140 words)</strong></span>
+</div>
+</div>
+<!-- Before vs After Transformation -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Raw Input -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-badge text-xs uppercase tracking-wider text-rose-700 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">close</span> Raw &amp; Rambling Draft (Before)
+                  </span>
+<span class="text-xs text-text-muted">218 words · Unstructured</span>
+</div>
+<div class="p-4 rounded-xl bg-red-50/50 border border-red-200 text-body-sm text-text-muted leading-relaxed min-h-[160px]">
+                  "So basically I got into coding back during college and worked at a couple different companies doing backend tasks. I mostly worked on tickets and Jira stories in Python and Go, helped fixed bugs with databases, and our team did microservices. I really like this company's product and think it would be a great fit for my skills..."
+                </div>
+</div>
+<!-- High Impact Polished Pitch -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-badge text-xs uppercase tracking-wider text-primary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> High-Impact Pitch (After Polishing)
+                  </span>
+<span class="text-xs font-label-mono text-primary font-semibold">58 Seconds · Hook + Metric + Fit</span>
+</div>
+<div class="p-4 rounded-xl bg-surface-tint-green border border-border-subtle-green text-body-sm text-text-primary leading-relaxed min-h-[160px] relative">
+<p class="mb-2">
+<strong class="text-primary">[Hook]</strong> "I’m a Senior Backend Engineer specialized in distributed systems and real-time streaming architectures."
+                  </p>
+<p class="mb-2">
+<strong class="text-primary">[Impact &amp; Metrics]</strong> "At my previous role, I led the migration of our ingestion pipeline to Go and Kafka, which reduced p99 processing latency by 64% and supported our scale to 10M+ daily events."
+                  </p>
+<p>
+<strong class="text-primary">[Role Fit]</strong> "I saw your team is currently scaling multi-region fault tolerance, which directly mirrors the challenges I solved, and I’d love to bring that execution here."
+                  </p>
+</div>
+</div>
+</div>
+<!-- Pitch Telemetry Stats -->
+<div class="mt-6 pt-5 border-t border-border-subtle flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-6 text-xs text-text-muted font-label-mono">
+<span>Hook Clarity: <strong class="text-primary">10/10</strong></span>
+<span>Quantified Results: <strong class="text-primary">2 Metrics</strong></span>
+<span>Role Alignment: <strong class="text-primary">100%</strong></span>
+</div>
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-headline-sm text-body-sm font-semibold hover:bg-primary-container transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">record_voice_over</span>
+<span>Practice Pitch Live</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- FEATURE 6: Built-in 4-Layer Security & Cost Guardrails -->
+<section class="w-full py-20 bg-hud-surface text-text-on-dark border-t border-hud-border" id="security-guard">
+<div class="max-w-6xl mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-14">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-accent-neon font-label-badge text-label-badge uppercase tracking-wider mb-4">
+              MVP Feature 6 · High-Trust Infrastructure
+            </span>
+<h2 class="font-headline-display text-headline-lg font-bold text-white tracking-tight mb-4">
+              Built-in 4-Layer Security &amp; Cost Guardrails
+            </h2>
+<p class="font-body-lg text-body-lg text-text-muted">
+              Zero wasted token spend. Strict IT-domain isolation and prompt injection neutralization built into the engine before requests touch foundation LLMs.
+            </p>
+</div>
+<!-- 4 Guards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Guard 1 -->
+<div class="rounded-2xl bg-hud-surface-elevated/70 p-6 border border-hud-border flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-xl bg-accent-neon/10 border border-accent-neon/30 text-accent-neon flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[20px]">filter_alt</span>
+</div>
+<div class="flex items-center gap-1.5 mb-1">
+<span class="text-xs font-label-mono text-accent-neon font-bold">GUARD 01</span>
+</div>
+<h3 class="font-headline-sm text-body-md font-bold text-white mb-2">Pre-flight Input Validation</h3>
+<p class="font-body-sm text-body-sm text-text-muted leading-relaxed">
+                  Runs locally on client &amp; edge prior to API execution. Drops empty, malformed, or nonsensical input strings, eliminating unnecessary token billing.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-hud-border/70 flex items-center gap-1 text-[11px] font-label-mono text-emerald-400">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> 0ms wasted billing
+              </div>
+</div>
+<!-- Guard 2 -->
+<div class="rounded-2xl bg-hud-surface-elevated/70 p-6 border border-hud-border flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-xl bg-accent-neon/10 border border-accent-neon/30 text-accent-neon flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[20px]">security</span>
+</div>
+<div class="flex items-center gap-1.5 mb-1">
+<span class="text-xs font-label-mono text-accent-neon font-bold">GUARD 02</span>
+</div>
+<h3 class="font-headline-sm text-body-md font-bold text-white mb-2">Prompt-Injection Filter</h3>
+<p class="font-body-sm text-body-sm text-text-muted leading-relaxed">
+                  Real-time heuristic &amp; embedding filter neutralizes jailbreak attempts, hidden tokens ("ignore previous instructions"), and payload manipulation.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-hud-border/70 flex items-center gap-1 text-[11px] font-label-mono text-emerald-400">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Jailbreaks neutralized
+              </div>
+</div>
+<!-- Guard 3 -->
+<div class="rounded-2xl bg-hud-surface-elevated/70 p-6 border border-hud-border flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-xl bg-accent-neon/10 border border-accent-neon/30 text-accent-neon flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[20px]">lock_clock</span>
+</div>
+<div class="flex items-center gap-1.5 mb-1">
+<span class="text-xs font-label-mono text-accent-neon font-bold">GUARD 03</span>
+</div>
+<h3 class="font-headline-sm text-body-md font-bold text-white mb-2">Strict Scope Enforcement</h3>
+<p class="font-body-sm text-body-sm text-text-muted leading-relaxed">
+                  System boundary explicitly locks queries to IT interview topics. Out-of-domain requests are politely declined before generating expensive output tokens.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-hud-border/70 flex items-center gap-1 text-[11px] font-label-mono text-emerald-400">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> IT Context Locked
+              </div>
+</div>
+<!-- Guard 4 -->
+<div class="rounded-2xl bg-hud-surface-elevated/70 p-6 border border-hud-border flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-xl bg-accent-neon/10 border border-accent-neon/30 text-accent-neon flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[20px]">speed</span>
+</div>
+<div class="flex items-center gap-1.5 mb-1">
+<span class="text-xs font-label-mono text-accent-neon font-bold">GUARD 04</span>
+</div>
+<h3 class="font-headline-sm text-body-md font-bold text-white mb-2">Intelligent Rate Limiting</h3>
+<p class="font-body-sm text-body-sm text-text-muted leading-relaxed">
+                  Prevents runaway automated scripts, infinite loops, and token depletion. Protects user quota while keeping response latency sub-350ms.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-hud-border/70 flex items-center gap-1 text-[11px] font-label-mono text-emerald-400">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Budget preservation
+              </div>
+</div>
+</div>
+<!-- Live Security Status Telemetry Bar -->
+<div class="p-4 rounded-xl bg-hud-surface-elevated/50 border border-hud-border flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-accent-neon animate-pulse"></span>
+<span class="font-label-mono text-xs text-text-on-dark font-medium">All 4 Guardrails Active &amp; Protecting Your Token Budget</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-label-mono text-text-muted">
+<span>Threat Defense: <strong>99.98%</strong></span>
+<span>Average Latency Overhead: <strong>&lt; 14ms</strong></span>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. PRICING SECTION -->
+<section class="w-full py-20 bg-surface-canvas" id="pricing">
+<div class="max-w-5xl mx-auto px-6">
+<div class="text-center max-w-2xl mx-auto mb-14">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-tint-green text-primary font-label-badge text-label-badge uppercase tracking-wider mb-4">
+              MVP Pricing
+            </span>
+<h2 class="font-headline-display text-headline-lg font-bold text-text-primary tracking-tight mb-4">
+              Simple Access for Your <span class="text-primary">Upcoming Interviews</span>
+</h2>
+<p class="font-body-lg text-body-lg text-text-muted">
+              Everything you need to analyze target job descriptions and enter tech interviews fully prepared.
+            </p>
+</div>
+<!-- Pricing Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch mb-12">
+<!-- Free MVP Trial -->
+<div class="rounded-3xl bg-surface-card p-8 border border-border-subtle shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-[20px]">explore</span>
+</div>
+<h3 class="font-headline-md text-headline-sm font-bold text-text-primary mb-1">Starter MVP</h3>
+<p class="text-body-sm text-text-muted mb-4">Perfect for exploring your target job match.</p>
+<div class="flex items-baseline gap-1 mb-6">
+<span class="font-headline-display text-headline-display font-extrabold text-text-primary">€0</span>
+<span class="font-body-md text-text-muted">/ 3 days</span>
+</div>
+<div class="flex flex-col gap-3.5 mb-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[18px]">check</span>
+<span class="font-body-md text-body-sm font-semibold text-text-primary">3 Job Description Analyses</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[18px]">check</span>
+<span class="font-body-md text-body-sm font-semibold text-text-primary">1 Resume Match Coverage Audit</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[18px]">check</span>
+<span class="font-body-md text-body-sm font-semibold text-text-primary">Elevator Pitch Polisher (3 runs)</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[18px]">check</span>
+<span class="font-body-md text-body-sm font-semibold text-text-primary">Standard Guardrail Protection</span>
+</div>
+</div>
+</div>
+<a class="w-full py-3.5 rounded-full bg-primary text-on-primary text-center font-headline-sm text-body-md font-semibold hover:bg-primary-container transition-all" data-path="signup-free" href="#workbench">
+                Start Free Trial →
+              </a>
+</div>
+<!-- Pro Pass -->
+<div class="rounded-3xl bg-gradient-to-br from-primary to-accent-emerald-dark p-8 shadow-xl text-on-primary flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-accent-neon text-hud-surface font-label-badge text-label-badge font-bold px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider">
+                Full MVP Access
+              </div>
+<div>
+<div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white mb-4">
+<span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+</div>
+<h3 class="font-headline-md text-headline-sm font-bold text-white mb-1">Interview Sprint Pass</h3>
+<p class="text-body-sm text-white/80 mb-4">Unlimited prep through all interview stages.</p>
+<div class="flex items-baseline gap-1 mb-6">
+<span class="font-headline-display text-headline-display font-extrabold text-white">€39</span>
+<span class="font-body-md text-white/80">/ month</span>
+</div>
+<div class="flex flex-col gap-3.5 mb-8 text-white">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-neon text-[18px]">check_circle</span>
+<span class="font-body-md text-body-sm font-semibold">Unlimited JD skill extractions</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-neon text-[18px]">check_circle</span>
+<span class="font-body-md text-body-sm font-semibold">Unlimited Resume match &amp; gap bridge scripts</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-neon text-[18px]">check_circle</span>
+<span class="font-body-md text-body-sm font-semibold">Role-specific Q&amp;A &amp; Reverse Questions</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-neon text-[18px]">check_circle</span>
+<span class="font-body-md text-body-sm font-semibold">Self-Introduction polisher with tone sliders</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-neon text-[18px]">check_circle</span>
+<span class="font-body-md text-body-sm font-semibold">Enterprise 4-tier security &amp; rate protection</span>
+</div>
+</div>
+</div>
+<a class="w-full py-3.5 rounded-full bg-white text-primary text-center font-headline-sm text-body-md font-bold shadow-md hover:bg-surface-tint-green transition-all" data-path="get-pro" href="#workbench">
+                Unlock Sprint Pass →
+              </a>
+</div>
+</div>
+<div class="text-center font-body-sm text-body-sm text-text-muted max-w-xl mx-auto space-y-1">
+<p>14-Day Money Back Guarantee · No unexpected renewals · Cancel anytime with 1 click.</p>
+</div>
+</div>
+</section>
+<!-- BOTTOM CALL TO ACTION -->
+<section class="w-full py-16 bg-surface-tint-green text-center border-t border-border-subtle-green">
+<div class="max-w-4xl mx-auto px-6">
+<h3 class="font-headline-display text-headline-md font-bold text-text-primary mb-3">
+            Ready to prepare your next tech interview with confidence?
+          </h3>
+<p class="font-body-lg text-body-lg text-text-muted mb-8 max-w-xl mx-auto">
+            Analyze your job posting and generate tailored technical STAR answers in less than 60 seconds.
+          </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+<a class="bg-primary text-on-primary font-headline-sm text-body-md font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-primary/25 hover:bg-primary-container transition-all" data-path="launch-mvp-bottom" href="#workbench">
+              Launch MVP Studio Free →
+            </a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="w-full bg-surface-container-lowest border-t border-border-subtle">
+<div class="max-w-7xl mx-auto px-6 py-12">
+<div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-8 pb-10 border-b border-border-subtle">
+<div class="lg:col-span-2 flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<img alt="IntervAI Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wy04P9yYiiinVeF39y7vhhMYR6BiY09WSUSAoeTpV2NYkMsIgjGOdjHOd282RzIsOH7RzORHt33rulOudACBVV65XGnCc8eiEZjvAeiLtdyFqpcmYdTLauHwDqI0UQOp1MNGvApNYcWxERbmmqNUOkia0vdkp3BDUYb-qMNO8mI6Jy8IHSOL9_14ZJYdw2BFLv613QAm9FArNx7O0HZ2JrCu-duWtXqAs7lzNgJTK-6QYM4Id5VUniIg"/>
+<span class="font-headline-sm text-headline-sm text-text-primary tracking-tight font-extrabold">Interv<span class="text-primary">AI</span></span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted max-w-sm">
+            AI-powered IT interview workspace featuring job description analysis, resume coverage matching, STAR Q&amp;A generation, and 4-tier cost guardrails.
+          </p>
+<div class="flex items-center gap-2 mt-2">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-tint-green text-primary border border-border-subtle-green font-label-badge text-label-badge">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-neon animate-pulse"></span> 4-TIER GUARDRAILS ACTIVE
+            </span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-headline-sm text-body-sm font-semibold text-text-primary uppercase tracking-wider">MVP Modules</span>
+<div class="flex flex-col gap-2 font-body-sm text-body-sm">
+<a class="text-text-muted hover:text-primary transition-colors" href="#jd-analyzer">JD Skill Extraction</a>
+<a class="text-text-muted hover:text-primary transition-colors" href="#resume-matcher">Resume Gap Matcher</a>
+<a class="text-text-muted hover:text-primary transition-colors" href="#role-qa">Role-based Q&amp;A</a>
+<a class="text-text-muted hover:text-primary transition-colors" href="#role-qa">Reverse Questions</a>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-headline-sm text-body-sm font-semibold text-text-primary uppercase tracking-wider">Security &amp; Trust</span>
+<div class="flex flex-col gap-2 font-body-sm text-body-sm">
+<a class="text-text-muted hover:text-primary transition-colors" href="#security-guard">Pre-flight Validation</a>
+<a class="text-text-muted hover:text-primary transition-colors" href="#security-guard">Prompt Injection Filter</a>
+<a class="text-text-muted hover:text-primary transition-colors" href="#security-guard">Scope Enforcement</a>
+<a class="text-text-muted hover:text-primary transition-colors" href="#security-guard">Rate Protection</a>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-headline-sm text-body-sm font-semibold text-text-primary uppercase tracking-wider">Support</span>
+<div class="flex flex-col gap-2 font-body-sm text-body-sm">
+<a class="inline-flex items-center gap-1.5 text-text-muted hover:text-primary transition-colors" href="mailto:support@intervai.tech">
+<span class="material-symbols-outlined text-[16px]">mail</span>support@intervai.tech
+            </a>
+<a class="text-text-muted hover:text-primary transition-colors" href="#pricing">Plans &amp; Pricing</a>
+<span class="font-label-mono text-label-mono text-text-muted mt-1">Status: All Systems Normal</span>
+</div>
+</div>
+</div>
+<div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+<p class="font-body-sm text-body-sm text-text-muted">© 2025 IntervAI Technologies, Inc. All rights reserved.</p>
+<div class="flex items-center gap-6 font-body-sm text-body-sm text-text-muted">
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms</a>
+<a class="hover:text-primary transition-colors" href="#">Security Specs</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
