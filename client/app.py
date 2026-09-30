@@ -27,7 +27,8 @@ st.session_state["llm_settings"] = settings_sidebar(
     api_client.get_models(), api_client.get_default_settings()
 )
 
-page = st.navigation(pages)  # draws the menu, returns the page that was clicked
+# Menu along the top of the page (needs Streamlit >= 1.46); the sidebar keeps only the settings.
+page = st.navigation(pages, position="top")  # draws the menu, returns the page that was clicked
 page.run()                   # runs that page's file
 
 # streamlit run client/app.py

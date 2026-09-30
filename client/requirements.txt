@@ -1,2 +1,2 @@
 # Front-end dependencies
-streamlit
+streamlit>=1.46  # st.navigation(position="top")

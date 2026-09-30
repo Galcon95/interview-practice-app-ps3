@@ -12,7 +12,8 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from server import llm  # noqa: E402 (import after the path fix)
-from server.features import qa_generator, interviewer_questions  # noqa: E402
+from server.features import qa_generator, interviewer_questions, job_analyzer  # noqa: E402
+from server.guards import input_validation  # noqa: E402
 
 # settings (in all functions below): {"model", "temperature", "max_tokens"}
 # from the sidebar, or None for the server's defaults.
@@ -41,6 +42,25 @@ def generate_interviewer_questions(role, level, settings=None):
     return interviewer_questions.generate_interviewer_questions(role, level, settings)
 
 
-# TODO: analyze_job_description(text)                 -> feature 3
+def validate_job_description(text):
+    # Feature 3, step 1: returns an error message, or None if the JD can be analyzed.
+    return input_validation.validate_input(
+        text,
+        input_validation.JD_MIN_CHARS,
+        input_validation.JD_MAX_CHARS,
+        name="The job description",
+    )
+
+
+def get_job_description_limits():
+    # (min, max) characters, so the page can show them to the user.
+    return input_validation.JD_MIN_CHARS, input_validation.JD_MAX_CHARS
+
+
+def analyze_job_description(text, settings=None):
+    # Feature 3, step 2: returns {"basic_info", "role_metadata", "skills", "other_requirements"}.
+    return job_analyzer.analyze_job_description(text, settings)
+
+
 # TODO: polish_introduction(text)                     -> feature 4
 # TODO: match_resume(resume_file, job_description)    -> feature 5
