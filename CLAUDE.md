@@ -39,4 +39,6 @@ Some of these still use old paths: `prompts/` is now `server/prompts/`, and `src
 ## Notes
 
 - Platform: Windows.
+- JD Analyzer screenshot input (paste box, Gemini 2.5 Flash reading, flow into the text analysis): see `docs/jd-analyzer-screenshot.md`.
+- Streamlit loads `client/api_client.py`, `client/components/` and `server/` only once at start: restart the app after changing them (pages in `views/` and prompts are re-read on every run).
 - Authentication plan: `docs/streamlit-auth.md` recommends Streamlit's built-in OIDC (`st.login()` / `st.user`, Streamlit ≥ 1.45) with Google, with credentials in `.streamlit/secrets.toml`. Add that file to `.gitignore` before creating it.

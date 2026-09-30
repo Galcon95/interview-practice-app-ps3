@@ -57,6 +57,21 @@ def get_job_description_limits():
     return input_validation.JD_MIN_CHARS, input_validation.JD_MAX_CHARS
 
 
+def validate_screenshot(data):
+    # Feature 3, screenshot input: returns an error message, or None if the image can be used.
+    return input_validation.validate_image(data, name="The screenshot")
+
+
+def get_screenshot_max_mb():
+    return input_validation.IMAGE_MAX_MB
+
+
+def read_job_screenshot(data):
+    # Feature 3, screenshot input: returns the text of the job posting in the image.
+    # Always uses the fixed vision model (job_analyzer.SCREENSHOT_MODEL), not the sidebar settings.
+    return job_analyzer.read_job_screenshot(data)
+
+
 def analyze_job_description(text, settings=None):
     # Feature 3, step 2: returns {"basic_info", "role_metadata", "skills", "other_requirements"}.
     return job_analyzer.analyze_job_description(text, settings)

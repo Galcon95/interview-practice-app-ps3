@@ -3,8 +3,14 @@
 # (basic info, role metadata, exact skills). Red/green flags come later,
 # then qa_generator (1) and interviewer_questions (2) are reused.
 
+from server.guards.input_validation import image_type
 from server.llm import LLMClient
 from server.prompt_loader import load_prompt
+
+# Reading a screenshot always uses this vision model, whatever is chosen in the sidebar:
+# it reads text from images well and is cheap. Temperature 0: copy, don't be creative.
+SCREENSHOT_MODEL = "google/gemini-2.5-flash"
+SCREENSHOT_MAX_TOKENS = 8000  # a long job posting is about 2,000-3,000 tokens
 
 # Allowed values, the same lists as in prompts/job_analyzer.md.
 SENIORITY_LEVELS = ["Junior", "Mid", "Senior", "Staff", "Lead"]
@@ -43,6 +49,36 @@ def analyze_job_description(text, settings=None):
         "skills": skills,
         "other_requirements": clean_list(reply.get("other_requirements")),
     }
+
+
+def read_job_screenshot(data):
+    # Step 1 (screenshot input): the vision model copies the text out of the image.
+    # Returns the text; the caller then analyzes it like pasted text.
+    # data: the image bytes, already checked by guards/input_validation.validate_image
+    system_prompt = load_prompt("jd_image_reader")
+    client = LLMClient(model=SCREENSHOT_MODEL, temperature=0, max_tokens=SCREENSHOT_MAX_TOKENS)
+    reply = client.complete_json(
+        system_prompt,
+        "Copy the text of the job posting in this screenshot.",
+        images=[(data, image_type(data))],
+    )
+    if not reply.get("is_job_posting"):
+        raise ValueError("The screenshot does not seem to show a job posting.")
+    return join_wrapped_lines((reply.get("text") or "").strip())
+
+
+def join_wrapped_lines(text):
+    # Vision models often keep the line breaks of the screen ("...combined with professional
+    # \nexperience in..."), even when the prompt asks them not to, so we fix it here:
+    # a line that is not empty and does not start a list item ("- ") continues the line before.
+    lines = []
+    for line in text.splitlines():
+        line = line.strip()
+        if line and lines and lines[-1] and not line.startswith("- "):
+            lines[-1] += " " + line
+        else:
+            lines.append(line)
+    return "\n".join(lines)
 
 
 def clean_list(items):

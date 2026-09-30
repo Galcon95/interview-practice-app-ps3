@@ -1,10 +1,15 @@
 # Page — Feature 3: Job description analyzer.
 # The workflow has 3 steps, each shown as its own section on this page:
-#   1. Paste     the user pastes the job description (JD) text          <- done
+#   1. Paste     the user pastes the job description (JD) text,         <- done
+#                or a screenshot that the AI turns into text first
 #   2. Review    the AI extracts basic info, role metadata and skills    <- done (editing: TODO)
 #   3. Plan      a strategy dashboard with next actions                  (TODO)
 #
 # What the page remembers between reruns (st.session_state):
+#   "jd_input_mode" which input view is shown: "📝 Text" or "🖼️ Screenshot"
+#   "jd_input"      what is typed in the text box (kept while hidden, also across pages)
+#   "jd_screenshot" the pasted or uploaded screenshot: {"name", "data"}, or missing
+#   "jd_show_text", "jd_read_note"  short-lived notes after "Process screenshot" (see below)
 #   "jd_text"       the JD that passed validation, or missing if none yet
 #   "jd_analysis"   the AI's result for that JD:
 #                   {"basic_info", "role_metadata", "skills", "other_requirements"}
@@ -15,6 +20,7 @@ import api_client
 from components.section_header import section_header
 from components.job_overview import job_overview
 from components.skill_list import skill_list
+from components.screenshot_input import screenshot_input
 
 # --- Page --- (page config and styles are set once in app.py)
 section_header(
@@ -26,34 +32,87 @@ section_header(
 min_chars, max_chars = api_client.get_job_description_limits()
 settings = st.session_state.get("llm_settings")  # from the sidebar (set in app.py)
 
-# --- Step 1: Paste the job description ---
+
+def analyze(text):
+    # Checks the text (guard 1, before any paid call), then asks the AI to analyze it.
+    # Returns True if it worked; problems are shown on the page.
+    error = api_client.validate_job_description(text)
+    if error:
+        st.error(error)
+        return False
+    with st.spinner("The AI is analyzing the job description..."):
+        try:
+            analysis = api_client.analyze_job_description(text.strip(), settings)
+        except Exception as error:
+            st.error(f"Could not analyze the job description: {error}")
+            return False
+    # Saved in session_state, so they survive the reruns of the next steps.
+    st.session_state["jd_text"] = text.strip()
+    st.session_state["jd_analysis"] = analysis
+    return True
+
+
+# After "Process" the page shows the Text view with the text read from the screenshot.
+# A widget's value can only be changed before the widget is drawn, so the Process button
+# leaves a note ("jd_show_text") and reruns the page, and the switch is made here.
+if st.session_state.pop("jd_show_text", False):
+    st.session_state["jd_input_mode"] = "📝 Text"
+
+# --- Step 1: Paste the job description (as text or as a screenshot) ---
 with st.container(border=True):
     st.markdown("#### 1. Paste the job description")
-    text = st.text_area(
-        "Job description",
-        height=280,
-        max_chars=max_chars,  # the text area itself stops the user at the limit
-        placeholder="Paste the full job posting here: title, company, responsibilities, requirements...",
+    input_mode = st.segmented_control(
+        "Input",
+        ["📝 Text", "🖼️ Screenshot"],
+        default="📝 Text",
+        required=True,  # one option is always selected, clicking it again does not clear it
+        key="jd_input_mode",
         label_visibility="collapsed",
     )
-    st.markdown(
-        f'<span class="mono">{len(text.strip())} characters · at least {min_chars} needed</span>',
-        unsafe_allow_html=True,
-    )
 
-    if st.button("Analyze job description", type="primary"):
-        error = api_client.validate_job_description(text)  # guard 1, before any paid call
-        if error:
-            st.error(error)
-        else:
-            with st.spinner("The AI is reading the job description..."):
+    if input_mode == "🖼️ Screenshot":
+        screenshot = screenshot_input(
+            key="jd_screenshot",
+            validate=api_client.validate_screenshot,
+            max_mb=api_client.get_screenshot_max_mb(),
+        )
+        # The text box is hidden, but its text is kept (persist_state in the text view).
+        text = st.session_state.get("jd_input", "")
+
+        if screenshot and st.button("Process screenshot", type="primary", icon=":material/document_scanner:"):
+            with st.spinner("The AI is reading the screenshot..."):
                 try:
-                    analysis = api_client.analyze_job_description(text.strip(), settings)
-                    # Saved in session_state, so they survive the reruns of the next steps.
-                    st.session_state["jd_text"] = text.strip()
-                    st.session_state["jd_analysis"] = analysis
+                    read_text = api_client.read_job_screenshot(screenshot["data"])
                 except Exception as error:
-                    st.error(f"Could not analyze the job description: {error}")
+                    st.error(f"Could not read the screenshot: {error}")
+                    read_text = None
+            if read_text is not None and analyze(read_text):
+                # Put the text into the text box (it is not drawn in this view, so this is allowed).
+                st.session_state["jd_input"] = read_text
+                st.session_state["jd_show_text"] = True
+                st.session_state["jd_read_note"] = f"Text read from {screenshot['name']}. Check it below."
+                st.rerun()
+            elif read_text:
+                # The analysis failed (e.g. text too short), but show what was read anyway.
+                st.text_area("Text read from the screenshot", read_text, height=200, disabled=True)
+    else:
+        if "jd_read_note" in st.session_state:
+            st.success(st.session_state.pop("jd_read_note"), icon=":material/document_scanner:")
+        text = st.text_area(
+            "Job description",
+            height=280,
+            max_chars=max_chars,  # the text area itself stops the user at the limit
+            placeholder="Paste the full job posting here: title, company, responsibilities, requirements...",
+            label_visibility="collapsed",
+            key="jd_input",
+            persist_state="session",  # keep the text while hidden (Screenshot view, other pages)
+        )
+        st.markdown(
+            f'<span class="mono">{len(text.strip())} characters · at least {min_chars} needed</span>',
+            unsafe_allow_html=True,
+        )
+        if st.button("Analyze job description", type="primary"):
+            analyze(text)
 
 # --- Step 2: Review the extracted details ---
 with st.container(border=True):

@@ -2,6 +2,7 @@
 # We use OpenRouter, which speaks the same API as OpenAI, so we use the openai package.
 # The API key is read from server/.env and never sent to the front end.
 
+import base64
 import json
 import os
 import time
@@ -54,13 +55,24 @@ class LLMClient:
         self.max_tokens = max_tokens
         self.log = LLMLogger()
 
-    def complete_json(self, system_prompt, user_prompt):
+    def complete_json(self, system_prompt, user_prompt, images=None):
         # Sends one request and returns the model's reply as a Python dict.
+        # images: optional list of (data, mime_type), e.g. [(png_bytes, "image/png")].
+        #         Only for models that can see images (vision models).
+        user_content = user_prompt
+        if images:
+            # With images, the message content is a list of parts: the text, then each image
+            # as a data URL ("data:image/png;base64,iVBOR..."), the format the OpenAI API expects.
+            user_content = [{"type": "text", "text": user_prompt}]
+            for data, mime_type in images:
+                data_url = f"data:{mime_type};base64,{base64.b64encode(data).decode()}"
+                user_content.append({"type": "image_url", "image_url": {"url": data_url}})
+
         payload = {
             "model": self.model,
             "messages": [
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
+                {"role": "user", "content": user_content},
             ],
             "response_format": {"type": "json_object"},  # ask the model for valid JSON
             "max_tokens": self.max_tokens,

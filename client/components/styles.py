@@ -9,6 +9,10 @@ CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
 html, body, [class*="st-"], p, li, label { font-family: 'Inter', sans-serif; }
+/* ...but not for Streamlit's icons (icon=":material/..."), they need their own icon font */
+[data-testid="stIconMaterial"], [data-testid="stAlertDynamicIcon"] {
+    font-family: 'Material Symbols Rounded' !important;
+}
 h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif !important; letter-spacing: -0.02em; }
 
 /* Small green pill above a section title, e.g. "MVP FEATURES 1 & 2" */

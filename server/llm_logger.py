@@ -42,7 +42,7 @@ class LLMLogger:
     def log_request(self, payload):
         # payload: the dict that is sent to the LLM (model, messages, ...)
         self.logger.info("REQUEST  -> %s", payload.get("model"))
-        self.logger.debug("Request payload:\n%s", self._to_json(payload))
+        self.logger.debug("Request payload:\n%s", self._to_json(self._hide_images(payload)))
 
     def log_response(self, model, content, usage, seconds):
         # content: the raw text the model sent back (before JSON parsing)
@@ -55,6 +55,21 @@ class LLMLogger:
         self.logger.error("ERROR: %s: %s", type(error).__name__, error)
         if content is not None:
             self.logger.error("Raw content:\n%s", content)
+
+    @classmethod
+    def _hide_images(cls, data):
+        # Returns a copy of the payload where every image data URL is replaced by a short
+        # note like "[image/png, 69 KB]". One screenshot as base64 is hundreds of KB and
+        # would fill the 1 MB log file after a few calls.
+        if isinstance(data, dict):
+            return {key: cls._hide_images(value) for key, value in data.items()}
+        if isinstance(data, list):
+            return [cls._hide_images(item) for item in data]
+        if isinstance(data, str) and data.startswith("data:") and ";base64," in data:
+            header, encoded = data.split(",", 1)
+            mime_type = header[5:].split(";")[0]
+            return f"[{mime_type}, {len(encoded) * 3 // 4 // 1024} KB]"
+        return data
 
     @staticmethod
     def _to_json(data):
