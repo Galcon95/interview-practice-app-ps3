@@ -6,8 +6,15 @@ import streamlit as st
 
 
 def qa_card(number, question, answer=None):
-    # answer is a dict with the keys "situation", "action", "result",
-    # or None while we only generate questions (no expander then).
+    """Draw one interview question as a card, with its model answer hidden in an expander.
+
+    Args:
+        number: the question's number, shown as "Q1.", "Q2.", ...
+        question: the question text.
+        answer: the model answer as a dict {"situation", "action", "result"}
+            (STAR format), or None. With None, only the question is shown (no
+            expander); that is the case while the app only generates questions.
+    """
     with st.container(border=True):
         st.markdown(f"**Q{number}. {question}**")
         if answer is None:

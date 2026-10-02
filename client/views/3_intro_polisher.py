@@ -6,4 +6,10 @@
 
 import streamlit as st
 
-st.write('This is the self-introduction polisher page.')
+from components.section_header import section_header
+
+section_header(
+    "Self-Introduction Polisher",
+    'Turn your "tell me about yourself" into a clear, confident pitch for the interview.',
+)
+st.info("This tool is coming soon. Meanwhile, try the **JD Analyzer** or **Role Q&A**.", icon=":material/schedule:")

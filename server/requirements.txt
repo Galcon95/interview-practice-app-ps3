@@ -1,3 +1,6 @@
 # Back-end dependencies
 openai          # client for OpenRouter (OpenAI-compatible API)
 python-dotenv   # reads the API key from server/.env
+
+# Tests (not needed to run the app)
+pytest

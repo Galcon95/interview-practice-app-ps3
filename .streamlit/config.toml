@@ -1,9 +1,23 @@
 # Streamlit theme, based on docs/stitch_interview_prep_web_app/DESIGN.md
 # Streamlit reads this file from the folder you start it in (the project root).
+# Restart the app after changing it.
+
+# Main page: light surfaces for reading and typing.
 [theme]
 base = "light"
 primaryColor = "#16a34a"              # emerald: buttons, active widgets
-backgroundColor = "#f8fafc"           # page canvas
-secondaryBackgroundColor = "#f0fdf4"  # inputs, sidebar
-textColor = "#0f172a"                 # slate text
+backgroundColor = "#f8fafc"           # page canvas (surface-canvas)
+secondaryBackgroundColor = "#ffffff"  # input fields are white (DESIGN.md: Form Inputs)
+textColor = "#0f172a"                 # slate text (text-primary)
+borderColor = "#cbd5e1"               # input border (DESIGN.md: Form Inputs)
+showWidgetBorder = true               # white inputs on white cards need a visible border
 font = "sans serif"
+
+# Sidebar: a dark "HUD" panel for the technical LLM settings
+# (DESIGN.md: "dark HUD containers for tactical readouts").
+[theme.sidebar]
+backgroundColor = "#0b1a11"           # deep emerald-tinted charcoal (hud-surface)
+secondaryBackgroundColor = "#1e293b"  # inputs in the sidebar (hud-surface-elevated)
+textColor = "#f8fafc"                 # text-on-dark
+borderColor = "#1e3a29"               # hud-border
+primaryColor = "#22c55e"              # brighter green, easier to see on dark (tertiary)

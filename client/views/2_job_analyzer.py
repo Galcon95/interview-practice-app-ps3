@@ -1,18 +1,19 @@
 # Page — Feature 3: Job description analyzer.
 # The workflow has 3 steps, each shown as its own section on this page:
 #   1. Paste     the user pastes the job description (JD) text,         <- done
-#                or a screenshot that the AI turns into text first
+#                or screenshots that the AI turns into text first
 #   2. Review    the AI extracts basic info, role metadata and skills    <- done (editing: TODO)
 #   3. Plan      a strategy dashboard with next actions                  (TODO)
 #
 # What the page remembers between reruns (st.session_state):
 #   "jd_input_mode" which input view is shown: "📝 Text" or "🖼️ Screenshot"
 #   "jd_input"      what is typed in the text box (kept while hidden, also across pages)
-#   "jd_screenshot" the pasted or uploaded screenshot: {"name", "data"}, or missing
-#   "jd_show_text", "jd_read_note"  short-lived notes after "Process screenshot" (see below)
+#   "jd_screenshots" the pasted or uploaded screenshots in reading order: a list of {"name", "data"}
+#   "jd_show_text", "jd_read_note"  short-lived notes after "Process screenshots" (see below)
 #   "jd_text"       the JD that passed validation, or missing if none yet
 #   "jd_analysis"   the AI's result for that JD:
 #                   {"basic_info", "role_metadata", "skills", "other_requirements"}
+#   "jd_meta"       how that result was made: {"source", "model"}, shown in the HUD bar
 
 import streamlit as st
 
@@ -21,10 +22,10 @@ from components.section_header import section_header
 from components.job_overview import job_overview
 from components.skill_list import skill_list
 from components.screenshot_input import screenshot_input
+from components.hud_bar import hud_bar
 
 # --- Page --- (page config and styles are set once in app.py)
 section_header(
-    "MVP feature 3",
     "Job Description Analyzer",
     "Paste a job posting. Get the role, the skills and a prep plan for the interview.",
 )
@@ -33,9 +34,19 @@ min_chars, max_chars = api_client.get_job_description_limits()
 settings = st.session_state.get("llm_settings")  # from the sidebar (set in app.py)
 
 
-def analyze(text):
-    # Checks the text (guard 1, before any paid call), then asks the AI to analyze it.
-    # Returns True if it worked; problems are shown on the page.
+def analyze(text, source="pasted text"):
+    """Check a job description, then let the AI analyze it, and store the result.
+
+    Problems are shown on the page with st.error(). On success, the text and
+    the result are stored in st.session_state["jd_text"] and ["jd_analysis"].
+
+    Args:
+        text: the job description, from the text box or read from a screenshot.
+        source: where the text came from, for the HUD bar, e.g. "2 screenshots".
+
+    Returns:
+        True if the analysis worked, False if the text was refused or the call failed.
+    """
     error = api_client.validate_job_description(text)
     if error:
         st.error(error)
@@ -49,6 +60,8 @@ def analyze(text):
     # Saved in session_state, so they survive the reruns of the next steps.
     st.session_state["jd_text"] = text.strip()
     st.session_state["jd_analysis"] = analysis
+    model = (settings or api_client.get_default_settings())["model"]
+    st.session_state["jd_meta"] = {"source": source, "model": model.split("/")[-1]}
     return True
 
 
@@ -71,30 +84,34 @@ with st.container(border=True):
     )
 
     if input_mode == "🖼️ Screenshot":
-        screenshot = screenshot_input(
-            key="jd_screenshot",
-            validate=api_client.validate_screenshot,
-            max_mb=api_client.get_screenshot_max_mb(),
+        screenshots = screenshot_input(
+            key="jd_screenshots",
+            validate=api_client.validate_screenshots,
+            limits=api_client.get_screenshot_limits(),
         )
         # The text box is hidden, but its text is kept (persist_state in the text view).
         text = st.session_state.get("jd_input", "")
 
-        if screenshot and st.button("Process screenshot", type="primary", icon=":material/document_scanner:"):
-            with st.spinner("The AI is reading the screenshot..."):
+        count = len(screenshots)
+        label = "Process screenshot" if count == 1 else f"Process {count} screenshots"
+        if screenshots and st.button(label, type="primary", icon=":material/document_scanner:"):
+            with st.spinner("The AI is reading the screenshots..."):
                 try:
-                    read_text = api_client.read_job_screenshot(screenshot["data"])
+                    read_text = api_client.read_job_screenshots([shot["data"] for shot in screenshots])
                 except Exception as error:
-                    st.error(f"Could not read the screenshot: {error}")
+                    st.error(f"Could not read the screenshots: {error}")
                     read_text = None
-            if read_text is not None and analyze(read_text):
+            source = "1 screenshot" if count == 1 else f"{count} screenshots"
+            if read_text is not None and analyze(read_text, source=source):
                 # Put the text into the text box (it is not drawn in this view, so this is allowed).
                 st.session_state["jd_input"] = read_text
                 st.session_state["jd_show_text"] = True
-                st.session_state["jd_read_note"] = f"Text read from {screenshot['name']}. Check it below."
+                read_from = screenshots[0]["name"] if count == 1 else f"{count} screenshots"
+                st.session_state["jd_read_note"] = f"Text read from {read_from}. Check it below."
                 st.rerun()
             elif read_text:
                 # The analysis failed (e.g. text too short), but show what was read anyway.
-                st.text_area("Text read from the screenshot", read_text, height=200, disabled=True)
+                st.text_area("Text read from the screenshots", read_text, height=200, disabled=True)
     else:
         if "jd_read_note" in st.session_state:
             st.success(st.session_state.pop("jd_read_note"), icon=":material/document_scanner:")
@@ -121,6 +138,12 @@ with st.container(border=True):
         st.info("Paste a job description and click **Analyze job description**.")
     else:
         analysis = st.session_state["jd_analysis"]
+        meta = st.session_state.get("jd_meta", {"source": "pasted text", "model": "default model"})
+        hud_bar(
+            path=["intervai", "jd-analysis", analysis["basic_info"].get("job_title") or "unknown role"],
+            details=[f"source: {meta['source']}", f"model: {meta['model']}"],
+            guards=api_client.get_guard_status(),
+        )
         job_overview(analysis)
 
         st.divider()
@@ -145,4 +168,4 @@ with st.container(border=True):
 # --- Step 3: Strategy dashboard (later block) ---
 with st.container(border=True):
     st.markdown("#### 3. Your interview prep plan")
-    st.info("Coming later: focus breakdown, must-know stack, priority topics and next actions.")
+    st.info("Coming soon: a prep plan for this job, with the topics to focus on and your next steps.")

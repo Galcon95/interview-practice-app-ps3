@@ -6,6 +6,15 @@ import streamlit as st
 
 
 def job_overview(analysis):
+    """Draw the job overview: "🎯 Job title @ Company", then 3 tiles (seniority, focus, location).
+
+    Under each tile is the model's reason for its choice. Missing values are
+    shown as "Not stated" or "Not detected".
+
+    Args:
+        analysis: the result of api_client.analyze_job_description(); uses its
+            "basic_info" and "role_metadata" parts.
+    """
     info = analysis["basic_info"]
     meta = analysis["role_metadata"]
 

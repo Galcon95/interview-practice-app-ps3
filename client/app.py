@@ -7,6 +7,7 @@
 import streamlit as st
 
 import api_client
+from app_config import is_developer_mode
 from components.styles import apply_styles
 from components.settings_sidebar import settings_sidebar
 
@@ -18,6 +19,11 @@ pages = [
     st.Page("views/3_intro_polisher.py", title="Intro Polisher", icon="✍️"),
     st.Page("views/4_resume_match.py", title="Resume Matcher", icon="🎯"),
 ]
+
+# Developer tools only exist when config.ini says developer_mode = on. Without it, the
+# page is not registered at all, so a customer can't open it, not even by its URL.
+if is_developer_mode():
+    pages.append(st.Page("views/9_prompt_lab.py", title="Prompt Lab", icon="🧪"))
 
 st.set_page_config(page_title="IntervAI", layout="wide")  # once, for all pages
 apply_styles()                                             # once, for all pages

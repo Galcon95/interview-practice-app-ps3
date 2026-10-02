@@ -11,6 +11,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from server.guards.rate_limit import check_rate_limit
 from server.llm_logger import LLMLogger
 
 load_dotenv(Path(__file__).parent / ".env")  # puts the values from server/.env into os.environ
@@ -34,10 +35,50 @@ DEFAULT_TEMPERATURE = 0.7
 DEFAULT_MAX_TOKENS = 4000
 
 
+class RateLimitError(ValueError):
+    """Raised when too many LLM calls are made in a short time (guard 4).
+
+    A ValueError, so the pages show it like any other bad input.
+    """
+
+
+class OutOfScopeError(ValueError):
+    """Raised when the model refuses a request as outside the app's scope (guard 3).
+
+    A ValueError, so the pages show it like any other bad input.
+
+    Attributes:
+        reason: the model's short explanation for the user.
+    """
+
+    def __init__(self, reason):
+        """Create the error with the message "Out of scope: <reason>".
+
+        Args:
+            reason: the model's short explanation, from its reply
+                {"out_of_scope": true, "reason": "..."}.
+        """
+        super().__init__(f"Out of scope: {reason}")
+        self.reason = reason
+
+
 def parse_json(text):
-    # Turns the model's reply into a dict. GPT models return pure JSON, but some
-    # models (e.g. Claude) wrap it in a Markdown code block: ```json { ... } ```
-    # So we take only the part from the first "{" to the last "}".
+    """Turn the model's reply text into a Python dict.
+
+    GPT models return pure JSON, but some models (e.g. Claude) wrap it in a
+    Markdown code block (```json { ... } ```), so only the part from the first
+    "{" to the last "}" is read.
+
+    Args:
+        text: the raw reply text of the model.
+
+    Returns:
+        The reply as a dict.
+
+    Raises:
+        ValueError: the text contains no JSON object, or the JSON is not valid
+            (json.JSONDecodeError is a ValueError).
+    """
     start, end = text.find("{"), text.rfind("}")
     if start == -1 or end == -1:
         raise ValueError("The model's reply contains no JSON object.")
@@ -45,7 +86,29 @@ def parse_json(text):
 
 
 class LLMClient:
+    """Sends requests to an LLM through OpenRouter and returns JSON replies.
+
+    Every request is checked by the rate limit first (guard 4), logged by
+    LLMLogger, and checked for an out-of-scope reply (guard 3).
+
+    Usage:
+        reply = LLMClient(**settings).complete_json(system_prompt, user_prompt)
+    """
+
     def __init__(self, model=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE, max_tokens=DEFAULT_MAX_TOKENS):
+        """Prepare a client for one model.
+
+        Args:
+            model: the OpenRouter model ID, e.g. "openai/gpt-5-mini" (see MODELS).
+            temperature: how creative the replies are (0 = always the same answer).
+                Only sent to models that support it (see MODELS).
+            max_tokens: the most tokens the reply may have. Reasoning models
+                (GPT-5) count their hidden thinking too, so keep it high.
+
+        Raises:
+            RuntimeError: OPENROUTER_API_KEY is not set in server/.env or in the
+                Windows environment variables.
+        """
         api_key = os.getenv("OPENROUTER_API_KEY")
         if not api_key:
             raise RuntimeError("OPENROUTER_API_KEY is missing. Add it to server/.env.")
@@ -56,9 +119,33 @@ class LLMClient:
         self.log = LLMLogger()
 
     def complete_json(self, system_prompt, user_prompt, images=None):
-        # Sends one request and returns the model's reply as a Python dict.
-        # images: optional list of (data, mime_type), e.g. [(png_bytes, "image/png")].
-        #         Only for models that can see images (vision models).
+        """Send one request to the model and return its reply as a dict.
+
+        Steps: rate limit check, build the request, log it, send it, log the
+        reply, parse the JSON, check for an out-of-scope reply.
+
+        Args:
+            system_prompt: the instructions for the model, from load_prompt().
+            user_prompt: the user's input, e.g. the role and level, or a job description.
+            images: optional list of (data, mime_type) pairs, e.g.
+                [(png_bytes, "image/png")]. Only for models that can see images
+                (vision models).
+
+        Returns:
+            The model's reply as a dict, in the format its system prompt asks for.
+
+        Raises:
+            RateLimitError: too many calls in a short time; the request was not sent.
+            OutOfScopeError: the model refused the request as out of scope.
+            RuntimeError: the reply was cut off at max_tokens.
+            ValueError: the reply is not valid JSON.
+            openai.APIError: the request failed (e.g. network problem, wrong API key).
+        """
+        error = check_rate_limit()  # guard 4, before the paid call
+        if error:
+            self.log.log_rate_limited(self.model, error)
+            raise RateLimitError(error)
+
         user_content = user_prompt
         if images:
             # With images, the message content is a list of parts: the text, then each image
@@ -92,7 +179,15 @@ class LLMClient:
                     f"The reply was cut off at {self.max_tokens} max tokens. "
                     "Increase 'Max tokens' in the sidebar settings."
                 )
-            return parse_json(content)
+            reply = parse_json(content)
         except Exception as error:
             self.log.log_error(error, content)
             raise  # pass the error on, so the page can still show it
+
+        # Guard 3: every system prompt ends with prompts/guardrail.md, which tells the model
+        # to reply {"out_of_scope": true, "reason": ...} instead of doing an off-topic task.
+        if reply.get("out_of_scope") is True:
+            reason = reply.get("reason") or "This app only helps with interview preparation for IT jobs."
+            self.log.log_out_of_scope(self.model, reason)
+            raise OutOfScopeError(reason)
+        return reply

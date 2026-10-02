@@ -7,4 +7,10 @@
 
 import streamlit as st
 
-st.write('This is the resume matching page.')
+from components.section_header import section_header
+
+section_header(
+    "Resume Matcher",
+    "Upload your resume and see how well it covers the skills the job asks for.",
+)
+st.info("This tool is coming soon. Meanwhile, try the **JD Analyzer** or **Role Q&A**.", icon=":material/schedule:")

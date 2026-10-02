@@ -6,6 +6,13 @@ import streamlit as st
 
 
 def skill_list(title, required, nice_to_have):
+    """Draw one group of skills as colored tags: green = required, gray = nice to have.
+
+    Args:
+        title: the group's heading, e.g. "Tech stack".
+        required: the required skills, a list of str.
+        nice_to_have: the optional skills, a list of str.
+    """
     st.markdown(f"**{title}**")
     if not required and not nice_to_have:
         st.caption("None mentioned")
@@ -18,6 +25,17 @@ def skill_list(title, required, nice_to_have):
 
 
 def badge(text, color):
-    # ":green-badge[C++]" is drawn as a tag; square brackets in the text would end the tag early.
+    """Turn a text into Streamlit Markdown for a colored tag, e.g. ":green-badge[C++]".
+
+    Square brackets in the text would end the tag early, so they become
+    round brackets.
+
+    Args:
+        text: the text on the tag, e.g. "C++".
+        color: a Streamlit color name, e.g. "green" or "gray".
+
+    Returns:
+        The Markdown (str) for st.markdown().
+    """
     text = text.replace("[", "(").replace("]", ")")
     return f":{color}-badge[{text}]"

@@ -6,8 +6,22 @@ import streamlit as st
 
 
 def settings_sidebar(models, defaults):
-    # models:   {model_id: {"label", "temperature"}}, from api_client.get_models()
-    # defaults: {"model", "temperature", "max_tokens"}, from api_client.get_default_settings()
+    """Draw the LLM settings in the sidebar: model, temperature and max tokens.
+
+    The temperature slider is disabled for models that ignore it (GPT-5).
+    Called once in app.py, so the settings are on every page and keep their
+    values when the user switches pages.
+
+    Args:
+        models: the models to choose from, {model_id: {"label", "temperature"}},
+            from api_client.get_models().
+        defaults: the start values {"model", "temperature", "max_tokens"}, from
+            api_client.get_default_settings().
+
+    Returns:
+        The chosen settings as a dict {"model": str, "temperature": float,
+        "max_tokens": int}, ready to pass to the api_client functions.
+    """
     model_ids = list(models)
 
     with st.sidebar:

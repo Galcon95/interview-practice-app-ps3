@@ -5,6 +5,12 @@ import streamlit as st
 
 
 def reverse_question_card(category, question):
+    """Draw one "question to ask the interviewer" as a card, with its category above it.
+
+    Args:
+        category: a short category of 2 or 3 words, e.g. "Tech stack".
+        question: the question text.
+    """
     st.markdown(
         f"""
         <div class="reverse-q">

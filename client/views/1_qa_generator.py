@@ -15,12 +15,11 @@ from components.reverse_question_card import reverse_question_card
 
 # --- Page --- (page config and styles are set once in app.py)
 section_header(
-    "MVP features 1 & 2",
     "Role-Based Q&A & Reverse Questions Generator",
     "Practice questions with model answers, plus smart questions to ask the interviewer.",
 )
 
-role, level = role_picker()  # shared by both panels
+role, level = role_picker(*api_client.get_roles_and_levels())  # shared by both panels
 settings = st.session_state.get("llm_settings")  # from the sidebar (set in app.py)
 model = settings["model"] if settings else "default model"
 

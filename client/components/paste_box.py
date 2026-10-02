@@ -81,6 +81,17 @@ _paste_box = st.components.v2.component("paste_box", html=HTML, css=CSS, js=JS)
 
 
 def paste_box(key):
+    """Draw the paste box and return the image the user just pasted, if any.
+
+    The paste is a one-time event: the image is returned only in the run right
+    after the paste, so the caller must store it (screenshot_input does).
+
+    Args:
+        key: a unique name for this paste box on the page.
+
+    Returns:
+        {"name": str, "data": bytes} in the run right after a paste, otherwise None.
+    """
     result = _paste_box(key=key, on_pasted_change=lambda: None)
     if not result.pasted:
         return None
